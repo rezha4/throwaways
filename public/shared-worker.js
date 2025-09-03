@@ -38,49 +38,8 @@ class SupabaseClient {
       return await response.json();
     } catch (error) {
       console.error("Failed to fetch from Supabase:", error);
-      return this.generateFallbackData();
+      throw Error(error);
     }
-  }
-
-  generateFallbackData() {
-    // Fallback data if Supabase fails
-    const chartTypes = ["line", "bar", "area"];
-    const categories = [
-      "performance",
-      "network",
-      "database",
-      "application",
-    ];
-    const colors = [
-      "#3b82f6",
-      "#10b981",
-      "#8b5cf6",
-      "#f59e0b",
-      "#ef4444",
-    ];
-
-    return Array.from({ length: 12 }, (_, i) => ({
-      id: `fallback-${i}`,
-      chart_name: `Fallback Chart ${i + 1}`,
-      chart_type: chartTypes[i % chartTypes.length],
-      category: categories[i % categories.length],
-      metadata: {
-        color: colors[i % colors.length],
-        unit: ["%", "MB", "ms", "req/s"][i % 4],
-        max: [100, 1000, 2000, 500][i % 4],
-      },
-      data_points: this.generateDataPoints(60 + (i % 40)),
-    }));
-  }
-
-  generateDataPoints(count) {
-    return Array.from({ length: count }, (_, i) => ({
-      x: i * 2,
-      y: Math.sin(i / 20) * 30 + Math.random() * 40 + 50,
-      timestamp: new Date(
-        Date.now() - (count - i) * 2000
-      ).toISOString(),
-    }));
   }
 }
 
